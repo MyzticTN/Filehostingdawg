@@ -1,0 +1,27 @@
+import requests
+from bs4 import BeautifulSoup
+import json
+
+# URL of the SteamRIP games list
+url = 'https://steamrip.com/games-list-page/'
+
+# Fetch the page content
+response = requests.get(url)
+soup = BeautifulSoup(response.text, 'html.parser')
+
+# Extract game titles and URLs
+games = []
+for link in soup.select('a.game-link'):  # Adjust the selector based on actual HTML structure
+    title = link.text.strip()
+    game_url = link['href']
+    games.append({'title': title, 'url': game_url})
+
+# Create the JSON structure
+steamrip_data = {
+    'name': 'SteamRIP',
+    'games': games
+}
+
+# Write to a JSON file
+with open('steamrip.json', 'w', encoding='utf-8') as f:
+    json.dump(steamrip_data, f, ensure_ascii=False, indent=2)
